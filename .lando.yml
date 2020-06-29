@@ -1,0 +1,98 @@
+name: d8-react-demo
+recipe: drupal8
+config:
+  php: 7.3
+  via: nginx
+  webroot: web
+
+services:
+  appserver:
+    build:
+      - composer install
+
+  # search:
+  #   type: solr:8
+  #   portforward: true
+  #   core: trudell_ah
+  #   config:
+  #     dir: solr_conf
+
+  # node:
+  #   type: node
+  #   build:
+  #     - cd /app/web/themes/custom/trudell_ah && npm install && gulp -- sass
+  #   globals:
+  #     gulp-cli: latest
+
+  mailhog:
+    type: mailhog
+    hogfrom:
+      - appserver
+    portforward: true
+
+  # webdriver:
+  #   type: compose
+  #   services:
+  #     image: selenium/standalone-chrome
+  #     user: root
+  #     ports:
+  #       - "4444:4444"
+  #     volumes:
+  #       - /dev/shm:/dev/shm
+  #     command: /opt/bin/entry_point.sh
+
+  # phpmyadmin:
+  #   type: phpmyadmin
+  #   hosts:
+  #     - database
+
+tooling:
+  phpcs:
+    service: appserver
+    description: 'Run phpcs: lando phpcs'
+    cmd:
+      - 'phpcs --standard=Drupal,DrupalPractice --extensions=php,module,inc,install,test,profile,theme,css,info,txt,md'
+  phpcbf:
+    service: appserver
+    description: 'Run phpcbf: lando phpcbf'
+    cmd:
+      - 'phpcbf --standard=Drupal,DrupalPractice --extensions=php,module,inc,install,test,profile,theme,css,info,txt,md'
+  phpdebt:
+    service: appserver
+    description: 'Run phpdebt: lando phpdebt'
+    cmd:
+      - 'phpdebt'
+  node:
+    service: node
+  npm:
+    service: node
+  gulp:
+    service: node
+  phpunit:
+    service: appserver
+    description: "Run PHP Unit tests: lando phpunit \nCan run --filter testFunctionName ClassNameTest /path/to/class"
+    cmd:
+      - /app/vendor/bin/phpunit --debug --configuration /app/phpunit-lando.xml
+  phpunit-js:
+    service: appserver
+    description: "Run PHP Unit Functional JS tests: lando phpunit \nCan run --filter testFunctionName ClassNameTest /path/to/class"
+    cmd:
+      - /app/vendor/bin/phpunit --debug --configuration /app/phpunit-lando-functjs.xml
+  # Nginx - xdebug on/off toggling
+  xdebug-on:
+    service: appserver
+    description: Enable xdebug for nginx.
+    cmd: docker-php-ext-enable xdebug && pkill -o -USR2 php-fpm
+    user: root
+  xdebug-off:
+    service: appserver
+    description: Disable xdebug for nginx.
+    cmd: rm /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini && pkill -o -USR2 php-fpm
+    user: root
+  janitor:
+    service: appserver
+    description: "Export the database with personal information removed."
+    # Pipe the output where you want it. For example,
+    #  $ lando janitor > janitor-dump.sql
+    #  $ lando janitor | gzip -c > janitor-dump.sql.gz
+    cmd: /bin/sh -c 'php /app/vendor/bin/janitor.phar --username=drupal8 --password=drupal8 --host=database drupal8 -t 2>/dev/null'

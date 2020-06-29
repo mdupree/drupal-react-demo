@@ -1,0 +1,48 @@
+Arguments: 
+  /usr/bin/node /usr/share/yarn/bin/yarn.js workspaces run build
+
+PATH: 
+  /tmp/yarn--1593449671124-0.8307849408521546:/home/mdupree/dev/acro/d8-react-demo/node_modules/.bin:/home/mdupree/.config/yarn/link/node_modules/.bin:/home/mdupree/dev/acro/d8-react-demo/node_modules/.bin:/home/mdupree/.yarn/bin:/usr/libexec/lib/node_modules/npm/bin/node-gyp-bin:/usr/lib/node_modules/npm/bin/node-gyp-bin:/usr/bin/node_modules/npm/bin/node-gyp-bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
+
+Yarn version: 
+  1.22.4
+
+Node version: 
+  10.19.0
+
+Platform: 
+  linux x64
+
+Trace: 
+  SyntaxError: /home/mdupree/dev/acro/d8-react-demo/web/modules/custom/react_demo/package.json: Unexpected token } in JSON at position 165
+      at JSON.parse (<anonymous>)
+      at /usr/share/yarn/lib/cli.js:1625:59
+      at Generator.next (<anonymous>)
+      at step (/usr/share/yarn/lib/cli.js:310:30)
+      at /usr/share/yarn/lib/cli.js:321:13
+
+npm manifest: 
+  {
+    "name": "d8-react-demo",
+    "version": "1.0.0",
+    "main": "index.js",
+    "license": "MIT",
+    "private": true,
+    "devDependencies": {
+      "webpack": "^4.42.0",
+      "webpack-cli": "^3.3.11"
+    },
+    "scripts": {
+      "build": "yarn workspaces run build"
+    },
+    "workspaces": [
+      "web/modules/custom/*",
+      "web/themes/custom/*"
+    ]
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile

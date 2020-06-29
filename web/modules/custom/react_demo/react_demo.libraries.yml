@@ -1,0 +1,14 @@
+custom:
+  version: 1.0
+  js:
+    js/dist/index.js: { preprocess: false, minified: true }
+  css:
+    component:
+      css/dist/index.css: { preprocess: false, minified: true }
+
+react:
+  js:
+    //unpkg.com/react@16/umd/react.production.min.js:
+      external: true
+    //unpkg.com/react-dom@16/umd/react-dom.production.min.js:
+      external: true
